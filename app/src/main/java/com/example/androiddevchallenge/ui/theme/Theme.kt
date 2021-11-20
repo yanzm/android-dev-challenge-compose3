@@ -15,50 +15,39 @@
  */
 package com.example.androiddevchallenge.ui.theme
 
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
-
-private val LightColorPalette = lightColors(
-    primary = pink100,
-    primaryVariant = pink100,
-    secondary = pink900,
-    background = white,
-    surface = white850,
-
-    onPrimary = gray,
-    onSecondary = white,
-    onBackground = gray,
-    onSurface = gray,
-)
-
-private val DarkColorPalette = darkColors(
-    primary = green900,
-    primaryVariant = green900,
-    secondary = green300,
-    background = gray,
-    surface = white150,
-
-    onPrimary = white,
-    onSecondary = gray,
-    onBackground = white,
-    onSurface = white850,
-)
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
-fun MyTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
+fun MyTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    useDynamic: Boolean = true,
+    content: @Composable() () -> Unit
+) {
+    val colorScheme = if (useDynamic && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val context = LocalContext.current
+        if (darkTheme) {
+            dynamicDarkColorScheme(context)
+        } else {
+            dynamicLightColorScheme(context)
+        }
     } else {
-        LightColorPalette
+        if (darkTheme) {
+            DarkColorScheme
+        } else {
+            LightColorScheme
+        }
     }
 
     MaterialTheme(
-        colors = colors,
+        colorScheme = colorScheme,
         typography = typography,
-        shapes = shapes,
+//        shapes = Shapes,
         content = content
     )
 }

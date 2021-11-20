@@ -15,13 +15,42 @@
  */
 package com.example.androiddevchallenge.ui.theme
 
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
 val pink100 = Color(0xFFFFF1F1)
 val pink900 = Color(0xFF3F2C2C)
-val white = Color.White
 val gray = Color(0xFF232323)
-val green900 = Color(0xFF2D3B2D)
 val green300 = Color(0xFFB8C9B8)
+val green900 = Color(0xFF2D3B2D)
 val white150 = Color.White.copy(alpha = 0.15f)
 val white850 = Color.White.copy(alpha = 0.85f)
+
+val LightColorScheme = darkColorScheme(
+    primary = pink100,
+    onPrimary = gray,
+
+    secondary = pink900,
+    onSecondary = Color.White,
+
+    background = Color.White,
+    onBackground = gray,
+
+    surface = white850,
+    onSurface = gray,
+)
+
+val DarkColorScheme = lightColorScheme(
+    primary = green900,
+    onPrimary = Color.White,
+
+    secondary = green300,
+    onSecondary = gray,
+
+    background = gray,
+    onBackground = Color.White,
+
+    surface = white150,
+    onSurface = white850,
+)

@@ -16,65 +16,63 @@
 package com.example.androiddevchallenge
 
 import android.os.Bundle
-import android.view.View
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.core.view.WindowCompat
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.androiddevchallenge.ui.HomeScreen
+import com.example.androiddevchallenge.ui.LoginScreen
+import com.example.androiddevchallenge.ui.WelcomeScreen
 import com.example.androiddevchallenge.ui.theme.MyTheme
+import com.google.accompanist.insets.ProvideWindowInsets
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.decorView.systemUiVisibility = (
-            View.SYSTEM_UI_FLAG_VISIBLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            )
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             MyTheme {
-                MyApp()
+                ProvideWindowInsets {
+                    MyApp()
+                }
             }
         }
     }
 }
 
 @Composable
-fun MyApp(viewModel: MainViewModel = viewModel()) {
-    val destination by viewModel.destination.observeAsState(Destination.Welcome)
-    when (destination) {
-        Destination.Welcome ->
-            Surface(color = MaterialTheme.colors.primary) {
-                Welcome {
-                    viewModel.updateDestination(Destination.Login)
+fun MyApp() {
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = "welcome"
+    ) {
+        composable("welcome") {
+            WelcomeScreen(
+                onClickLogin = {
+                    navController.navigate("login")
                 }
-            }
-        Destination.Login -> {
-            BackHandler {
-                viewModel.updateDestination(Destination.Welcome)
-            }
-            Surface(color = MaterialTheme.colors.background) {
-                Login {
-                    viewModel.updateDestination(Destination.Home)
-                }
-            }
+            )
         }
-        Destination.Home -> {
-            BackHandler {
-                viewModel.updateDestination(Destination.Login)
-            }
-            Surface(color = MaterialTheme.colors.background) {
-                Home()
-            }
+        composable("login") {
+            LoginScreen(
+                onClickLogin = {
+                    navController.navigate("home") {
+                        popUpTo("welcome") {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+        composable("home") {
+            HomeScreen()
         }
     }
 }

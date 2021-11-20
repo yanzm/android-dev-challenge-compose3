@@ -13,49 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.androiddevchallenge
+package com.example.androiddevchallenge.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,61 +58,84 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.androiddevchallenge.R
 import com.example.androiddevchallenge.ui.theme.MyTheme
+import com.google.accompanist.insets.navigationBarsPadding
 
 @Composable
+fun HomeScreen() {
+    Surface(color = MaterialTheme.colorScheme.background) {
+        Home()
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun Home() {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Scaffold(
+        bottomBar = {
+            NavigationBar(
+                modifier = Modifier.navigationBarsPadding(),
+                onClick = { }
+            )
+        }
+    ) {
         Column(
             modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
+                .fillMaxSize()
+                .padding(it)
                 .verticalScroll(rememberScrollState())
         ) {
 
-            Spacer(modifier = Modifier.height(32.dp))
-//            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
-            SearchComponent()
+            SearchComponent(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            )
 
-            Header(
+            Text(
                 text = "Browse themes",
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
                     .paddingFromBaseline(top = 32.dp, bottom = 8.dp)
                     .padding(horizontal = 16.dp)
             )
 
-            BrowseThemesRow()
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp)
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(vertical = 4.dp, horizontal = 12.dp)
             ) {
-                Header(
+                items(BrowseThemes.values()) { theme ->
+                    BrowseThemesCard(theme)
+                }
+            }
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Text(
                     text = "Design your home garden",
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier
                         .paddingFromBaseline(top = 32.dp, bottom = 16.dp)
                         .weight(1f)
                 )
                 IconButton(
-                    onClick = {
-                        // TODO
-                    },
-                    modifier = Modifier
-                        .padding(top = 14.dp)
-                        .size(24.dp)
+                    onClick = {},
+                    modifier = Modifier.padding(end = 4.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Filled.FilterList,
                         contentDescription = "sort",
-                        tint = MaterialTheme.colors.onBackground
+                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }
@@ -128,37 +145,17 @@ fun Home() {
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-
-        MyBottomAppBar {
-            for (tab in Tab.values()) {
-                BottomAppBarItem(
-                    isSelect = tab == Tab.Home, tab = tab,
-                    onClick = {
-                        // TODO
-                    }
-                )
-            }
-        }
     }
 }
 
 @Composable
-fun SearchComponent() {
+fun SearchComponent(modifier: Modifier = Modifier) {
     var searchValue by remember { mutableStateOf("") }
 
-    OutlinedTextField(
+    TextField(
         value = searchValue,
         onValueChange = { searchValue = it },
-        placeholder = {
-            Text(
-                "Search",
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.onBackground
-            )
-        },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            textColor = MaterialTheme.colors.onBackground
-        ),
+        placeholder = "Search",
         leadingIcon = {
             Icon(
                 imageVector = Icons.Filled.Search,
@@ -166,53 +163,20 @@ fun SearchComponent() {
                 modifier = Modifier.size(18.dp)
             )
         },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    )
-}
-
-@Composable
-fun Header(text: String, modifier: Modifier) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.h1,
-        color = MaterialTheme.colors.onBackground,
         modifier = modifier
     )
 }
 
 @Composable
-fun BrowseThemesRow() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState())
-    ) {
-        val values = BrowseThemes.values()
-        val last = values.lastIndex
-        for ((i, item) in values.withIndex()) {
-            BrowseThemesCard(i == 0, i == last, item)
-        }
-    }
-}
-
-@Composable
-fun BrowseThemesCard(isFirst: Boolean, isLast: Boolean, item: BrowseThemes) {
+fun BrowseThemesCard(item: BrowseThemes) {
     Card(
-        shape = MaterialTheme.shapes.small,
-        backgroundColor = MaterialTheme.colors.surface.compositeOver(MaterialTheme.colors.background),
-        contentColor = MaterialTheme.colors.onBackground,
+        shape = RoundedCornerShape(4.dp),
+        backgroundColor = MaterialTheme.colorScheme.surface.compositeOver(MaterialTheme.colorScheme.background),
+        contentColor = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier
-            .padding(
-                top = 8.dp,
-                bottom = 8.dp,
-                start = if (isFirst) 16.dp else 8.dp,
-                end = if (isLast) 16.dp else 0.dp,
-            )
+            .padding(4.dp)
             .size(136.dp)
             .clickable {
-                // TODO
             },
     ) {
         Column(
@@ -226,8 +190,8 @@ fun BrowseThemesCard(isFirst: Boolean, isLast: Boolean, item: BrowseThemes) {
             )
             Text(
                 text = item.text,
-                style = MaterialTheme.typography.h2,
-                color = MaterialTheme.colors.onBackground,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
@@ -242,128 +206,66 @@ fun BrowseThemesCard(isFirst: Boolean, isLast: Boolean, item: BrowseThemes) {
 fun MyListItem(i: Int, garden: DesignHomeGarden) {
     var isChecked by remember { mutableStateOf(i == 0) }
 
-    Row(
-        modifier = Modifier.padding(horizontal = 16.dp)
-    ) {
+    Row {
+        Spacer(modifier = Modifier.width(16.dp))
+
         Image(
-            painter = painterResource(id = garden.image),
+            painter = painterResource(garden.image),
             contentDescription = garden.title,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(64.dp)
-                .clip(MaterialTheme.shapes.small)
+                .clip(RoundedCornerShape(4.dp))
         )
 
-        Box(
-            modifier = Modifier
-                .height(64.dp)
-                .padding(start = 8.dp)
-        ) {
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Box(modifier = Modifier.height(64.dp)) {
             Text(
                 text = garden.title,
-                style = MaterialTheme.typography.h2,
-                color = MaterialTheme.colors.onBackground,
+                style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier
                     .paddingFromBaseline(top = 24.dp)
                     .padding(start = 8.dp)
             )
+
             Text(
                 text = garden.description,
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.onBackground,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
-                    .paddingFromBaseline(bottom = 24.dp)
+                    .paddingFromBaseline(top = 40.dp)
                     .padding(start = 8.dp)
-                    .align(Alignment.BottomStart)
             )
 
             Checkbox(
                 checked = isChecked,
                 onCheckedChange = { isChecked = it },
                 colors = CheckboxDefaults.colors(
-                    checkmarkColor = MaterialTheme.colors.background
+                    checkedColor = MaterialTheme.colorScheme.secondary,
+                    uncheckedColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                    checkmarkColor = MaterialTheme.colorScheme.background,
+                    disabledColor = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.disabled),
                 ),
                 modifier = Modifier
+                    .padding(4.dp)
                     .align(Alignment.TopEnd)
-                    .padding(top = 16.dp)
             )
 
             Divider(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
+                    .padding(end = 16.dp)
             )
         }
     }
 }
 
-@Composable
-fun MyBottomAppBar(content: @Composable RowScope.() -> Unit) {
-    BottomAppBar(
-        elevation = 16.dp,
-        backgroundColor = MaterialTheme.colors.primary,
-        modifier = Modifier.height(56.dp),
-        contentPadding = PaddingValues(
-            start = 0.dp,
-            end = 0.dp
-        ),
-        content = content
-    )
-}
-
-@Composable
-fun RowScope.BottomAppBarItem(
-    isSelect: Boolean,
-    tab: Tab,
-    onClick: (Tab) -> Unit,
-    selectedContentColor: Color = LocalContentColor.current,
-    unselectedContentColor: Color = selectedContentColor.copy(alpha = ContentAlpha.medium)
-) {
-    Column(
-        modifier = Modifier
-            .weight(1f)
-            .fillMaxHeight()
-            .clickable {
-                onClick(tab)
-            },
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Icon(
-            imageVector = when (tab) {
-                Tab.Home -> Icons.Filled.Home
-                Tab.Favorites -> Icons.Filled.FavoriteBorder
-                Tab.Profile -> Icons.Filled.AccountCircle
-                Tab.Cart -> Icons.Filled.ShoppingCart
-            },
-            contentDescription = tab.name,
-            tint = if (isSelect) selectedContentColor else unselectedContentColor,
-            modifier = Modifier.size(24.dp)
-        )
-        Text(
-            tab.name,
-            style = MaterialTheme.typography.caption,
-            color = if (isSelect) selectedContentColor else unselectedContentColor,
-        )
-    }
-}
-
 @Preview(widthDp = 360, heightDp = 640)
+@Preview(widthDp = 360, heightDp = 640, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun HomePreview() {
     MyTheme {
-        Surface(color = MaterialTheme.colors.background) {
-            Home()
-        }
-    }
-}
-
-@Preview(widthDp = 360, heightDp = 640, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun HomePreviewDark() {
-    MyTheme {
-        Surface(color = MaterialTheme.colors.background) {
-            Home()
-        }
+        HomeScreen()
     }
 }
 
@@ -382,11 +284,4 @@ enum class DesignHomeGarden(val title: String, val description: String, val imag
     FiddleLeafTree("Fiddle leaf tree", "This is a description", R.drawable.image_fiddle_leaf_tree),
     SnakePlant("Snake plant", "This is a description", R.drawable.image_snake_plant),
     Pothos("Pothos", "This is a description", R.drawable.image_pothos),
-}
-
-enum class Tab {
-    Home,
-    Favorites,
-    Profile,
-    Cart
 }

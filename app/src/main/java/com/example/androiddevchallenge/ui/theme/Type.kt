@@ -15,7 +15,7 @@
  */
 package com.example.androiddevchallenge.ui.theme
 
-import androidx.compose.material.Typography
+import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -24,53 +24,65 @@ import androidx.compose.ui.unit.sp
 import com.example.androiddevchallenge.R
 
 val Nunito = FontFamily(
-    Font(R.font.nunito_sans_bold, FontWeight.W700),
-    Font(R.font.nunito_sans_semi_bold, FontWeight.W600),
-    Font(R.font.nunito_sans_light, FontWeight.W300),
+    Font(R.font.nunito_sans_bold, FontWeight.Bold),
+    Font(R.font.nunito_sans_semi_bold, FontWeight.SemiBold),
+    Font(R.font.nunito_sans_light, FontWeight.Light),
 )
 
 // Set of Material typography styles to start with
 val typography = Typography(
-    h1 = TextStyle(
+    titleLarge = TextStyle(
         fontFamily = Nunito,
         fontWeight = FontWeight.Bold,
         fontSize = 18.sp,
         letterSpacing = 0.sp,
     ),
-    h2 = TextStyle(
-        fontFamily = Nunito,
-        fontWeight = FontWeight.Bold,
-        fontSize = 14.sp,
-        letterSpacing = 0.15.sp,
-    ),
-    subtitle1 = TextStyle(
+    titleMedium = TextStyle(
         fontFamily = Nunito,
         fontWeight = FontWeight.Light,
         fontSize = 16.sp,
         letterSpacing = 0.sp,
     ),
-    body1 = TextStyle(
+    titleSmall = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp,
+        letterSpacing = 0.15.sp,
+    ),
+    bodyLarge = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.Light,
+        fontSize = 16.sp,
+        letterSpacing = 0.sp,
+    ),
+    bodyMedium = TextStyle(
         fontFamily = Nunito,
         fontWeight = FontWeight.Light,
         fontSize = 14.sp,
         letterSpacing = 0.sp,
     ),
-    body2 = TextStyle(
+    bodySmall = TextStyle(
         fontFamily = Nunito,
         fontWeight = FontWeight.Light,
         fontSize = 12.sp,
         letterSpacing = 0.sp,
     ),
-    button = TextStyle(
+    labelLarge = TextStyle(
         fontFamily = Nunito,
         fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
         letterSpacing = 1.sp,
     ),
-    caption = TextStyle(
+    labelMedium = TextStyle(
         fontFamily = Nunito,
         fontWeight = FontWeight.SemiBold,
         fontSize = 12.sp,
+        letterSpacing = 0.sp,
+    ),
+    labelSmall = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 11.sp,
         letterSpacing = 0.sp,
     ),
 )
